@@ -49,18 +49,60 @@ void printSummary(int nSeg, int nProc, int segSize[], int segUsed[], int segStar
 /* First-Fit */
 void firstFit(int nSeg, int nProc, int segSize[], int segUsed[], int segStart[], AllocationInfo alloc[]) {
     printf("\n--- FIRST FIT ---\n");
-    //@TODO
+
+    int occupied[MAX] = {0};
+    for(int i=0;i<nSeg;i++)
+        if(segUsed[i] > 0) occupied[i] = 1;
+
+    for(int i=0;i<nProc;i++)
+        alloc[i].partition = -1;
+
+    for(int p = 0; p < nProc; p++) {
+        for(int s = 0; s < nSeg; s++) {
+            if(!occupied[s] && segSize[s] >= alloc[p].size) {
+                alloc[p].partition = s;
+                alloc[p].start = segStart[s];
+                alloc[p].end = segStart[s] + alloc[p].size;
+
+                occupied[s] = 1;
+                segUsed[s] = alloc[p].size;
+                break;   // first fit: stop after first match
+            }
+        }
+    }
 
     printSummary(nSeg, nProc, segSize, segUsed, segStart, occupied, alloc);
 }
+
 
 /* Best-Fit */
-void bestFit(int nSeg, int nProc, int segSize[], int segUsed[], int segStart[], AllocationInfo alloc[]) {
-    printf("\n--- BEST FIT ---\n");
-    //@TODO
-    
+void firstFit(int nSeg, int nProc, int segSize[], int segUsed[], int segStart[], AllocationInfo alloc[]) {
+    printf("\n--- FIRST FIT ---\n");
+
+    int occupied[MAX] = {0};
+    for(int i=0;i<nSeg;i++)
+        if(segUsed[i] > 0) occupied[i] = 1;
+
+    for(int i=0;i<nProc;i++)
+        alloc[i].partition = -1;
+
+    for(int p = 0; p < nProc; p++) {
+        for(int s = 0; s < nSeg; s++) {
+            if(!occupied[s] && segSize[s] >= alloc[p].size) {
+                alloc[p].partition = s;
+                alloc[p].start = segStart[s];
+                alloc[p].end = segStart[s] + alloc[p].size;
+
+                occupied[s] = 1;
+                segUsed[s] = alloc[p].size;
+                break;   // first fit: stop after first match
+            }
+        }
+    }
+
     printSummary(nSeg, nProc, segSize, segUsed, segStart, occupied, alloc);
 }
+
 
 /* Worst-Fit */
 void worstFit(int nSeg, int nProc, int segSize[], int segUsed[], int segStart[], AllocationInfo alloc[]) {
